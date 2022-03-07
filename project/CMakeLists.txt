@@ -56,6 +56,6 @@ conan_cmake_run(
     BASIC_SETUP TARGETS CMAKE_TARGETS
 )
 
-add_subdirectory("${CMAKE_SOURCE_DIR}/core")
-add_subdirectory("${CMAKE_SOURCE_DIR}/server")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/core")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/server")
 add_subdirectory("${CMAKE_SOURCE_DIR}/tests")
