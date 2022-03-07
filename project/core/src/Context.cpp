@@ -28,7 +28,7 @@ Charta::Context::Context(Poco::Path workingDirectory) : _workingDirectory(std::m
     {
         this->InitDirectory();
         return;
-    };
+    }
 
 
     this->InitContextInfoFile();

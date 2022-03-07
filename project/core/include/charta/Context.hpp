@@ -19,6 +19,7 @@ namespace Charta
          * @param workingDirectory
          */
         explicit Context(Poco::Path  workingDirectory);
+        explicit Context() = default;
 
         /**
          * Update Context from file System
