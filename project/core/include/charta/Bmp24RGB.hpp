@@ -21,15 +21,7 @@ namespace Charta
          * create Bmp24RGB image from bmp file and allocate memory for it
          * (memory would be copied)
          */
-        Bmp24RGB(uint8_t* rawBmpData);
-
-
-        /**
-         * create Bmp24RGB from RawImage24 and allocate memory for it
-         * (memory would be copied)
-         */
-        Bmp24RGB(RawImage24& image);
-
+        Bmp24RGB(const uint8_t* rawBmpData);
 
         void WriteToBuffer(uint8_t* buffer, size_t bufferSize ,size_t offset);
 
@@ -40,7 +32,7 @@ namespace Charta
     private:
         uint32_t width;
         uint32_t height;
-        uint32_t _fileSize;
+        uint32_t _fullSize;
 
         uint8_t* _headerData;
         uint8_t* _rawPixelData;
