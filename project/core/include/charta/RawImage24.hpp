@@ -13,13 +13,15 @@ namespace Charta
         RawImage24(uint16_t width, uint16_t height);
         ~RawImage24();
 
-        void AppendImage(uint16_t xPos, uint16_t yPos, RawImage24& image);
+        void MergeImage(uint16_t xPos, uint16_t yPos, const RawImage24& image);
 
-        uint16_t getWidth() const;
+        RawImage24* GetSubImage(uint16_t xPos, uint16_t yPos, uint16_t width, uint16_t height);
 
-        uint16_t getHeight() const;
+        uint16_t GetWidth() const;
 
-        uint8_t *getRawData() const;
+        uint16_t GetHeight() const;
+
+        uint8_t *GetRawData() const;
 
     private:
         uint16_t _width;

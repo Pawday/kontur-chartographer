@@ -1,24 +1,14 @@
 #pragma once
 
+#include "charta/RawImage24.hpp"
+#include "charta/Bmp24RGB.hpp"
 
 namespace Charta
 {
     class ImageConverter
     {
-        static void RawToBmp
-        (
-            uint16_t height,
-            uint16_t width,
-            const uint8_t* inputRawImageDataBuffer,
-            uint8_t* bmpPixelDataBuffer
-        );
-
-        static void BmpToRaw
-        (
-            uint16_t height,
-            uint16_t width,
-            const uint8_t* inputBMPPixelDataBuffer,
-            uint8_t* rawImageDataBuffer
-        );
+    public:
+        static Bmp24RGB RawToBmp(RawImage24& inputRawImage);
+        static RawImage24 BmpToRaw(Bmp24RGB& inputBMPImage);
     };
 }

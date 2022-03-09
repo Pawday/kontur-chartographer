@@ -29,6 +29,12 @@ namespace Charta
 
         uint32_t GetFullSize() const;
 
+        uint8_t* GetRawPixelData() const;
+
+        uint32_t GetWidth() const;
+
+        uint32_t GetHeight() const;
+
     private:
         uint32_t width;
         uint32_t height;

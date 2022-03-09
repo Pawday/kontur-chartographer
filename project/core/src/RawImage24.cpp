@@ -12,7 +12,7 @@ Charta::RawImage24::~RawImage24()
     delete[] this->_rawData;
 }
 
-void Charta::RawImage24::AppendImage(uint16_t xPos, uint16_t yPos, RawImage24& image)
+void Charta::RawImage24::MergeImage(uint16_t xPos, uint16_t yPos, const RawImage24& image)
 {
     for (uint16_t y = 0; y < image._height; y++)
     {
@@ -33,17 +33,26 @@ void Charta::RawImage24::AppendImage(uint16_t xPos, uint16_t yPos, RawImage24& i
     }
 }
 
-uint16_t Charta::RawImage24::getWidth() const
+Charta::RawImage24 *Charta::RawImage24::GetSubImage(uint16_t xPos, uint16_t yPos, uint16_t width, uint16_t height)
+{
+    RawImage24* ret = nullptr;
+
+
+
+    return ret;
+}
+
+uint16_t Charta::RawImage24::GetWidth() const
 {
     return _width;
 }
 
-uint16_t Charta::RawImage24::getHeight() const
+uint16_t Charta::RawImage24::GetHeight() const
 {
     return _height;
 }
 
-uint8_t *Charta::RawImage24::getRawData() const
+uint8_t *Charta::RawImage24::GetRawData() const
 {
     return _rawData;
 }
