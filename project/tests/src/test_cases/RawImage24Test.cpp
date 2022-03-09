@@ -1,8 +1,9 @@
 #include <iostream>
 #include <catch2/catch.hpp>
 
+#include <Poco/File.h>
 
-#include <charta/RawImage24.hpp>
+#include "charta/RawImage24.hpp"
 
 TEST_CASE("raw_image_create_test", "[image]")
 {
@@ -21,7 +22,7 @@ TEST_CASE("raw_image_create_test", "[image]")
     }
 }
 
-TEST_CASE("image_combine_test", "[image]")
+TEST_CASE("raw_image_combine_test", "[image]")
 {
     Charta::RawImage24 image1(10, 10);
     
@@ -58,4 +59,52 @@ TEST_CASE("image_combine_test", "[image]")
         }
     }
 
+}
+
+TEST_CASE("raw_image_get_sub_image_uncropped_test", "[image]")
+{
+    using namespace Charta;
+
+    const uint16_t w = 10;
+    const uint16_t h = 10;
+
+    RawImage24 sourceImage(w, h);
+
+    uint8_t* imageRawData = sourceImage.GetRawData();
+    
+    for (int y = 0; y < h; y++)
+    {
+        for (int x = 0; x < w; x++)
+        {
+            imageRawData[(y * w + x) * 3 + 0] = 0xff;
+            imageRawData[(y * w + x) * 3 + 1] = 0xff;
+            imageRawData[(y * w + x) * 3 + 2] = 0xff;
+        }
+    }
+
+    RawImage24 subImage = sourceImage.GetUncroppedSubImage(5, 5, 10, 10);
+
+    uint8_t* subImageRawData = subImage.GetRawData();
+
+    for (int y = 0; y < 10; y++)
+    {
+        for (int x = 0; x < 10; x++)
+        {
+            if (y < 5 && x < 5)
+            {
+                if (subImageRawData[(y * 10 + x) * 3 + 0] != 0xff) FAIL();
+                if (subImageRawData[(y * 10 + x) * 3 + 1] != 0xff) FAIL();
+                if (subImageRawData[(y * 10 + x) * 3 + 1] != 0xff) FAIL();
+            }
+            else
+            {
+                if (subImageRawData[(y * 10 + x) * 3 + 0] != 0x00) FAIL();
+                if (subImageRawData[(y * 10 + x) * 3 + 1] != 0x00) FAIL();
+                if (subImageRawData[(y * 10 + x) * 3 + 1] != 0x00) FAIL();
+            }
+        }
+    }
+
+
+    
 }

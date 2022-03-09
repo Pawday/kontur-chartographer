@@ -33,11 +33,24 @@ void Charta::RawImage24::MergeImage(uint16_t xPos, uint16_t yPos, const RawImage
     }
 }
 
-Charta::RawImage24 *Charta::RawImage24::GetSubImage(uint16_t xPos, uint16_t yPos, uint16_t width, uint16_t height)
+Charta::RawImage24 Charta::RawImage24::GetUncroppedSubImage(uint16_t xPos, uint16_t yPos, uint16_t width, uint16_t height)
 {
-    RawImage24* ret = nullptr;
+    RawImage24 ret(width, height);
 
+    uint8_t* retImageRawPixelData = ret.GetRawData();
+    
+    for (int y = 0; y < height; y++)
+    {
+        if (this->_height - 1 < (y + yPos)) break;
 
+        for (int x = 0; x < width; x++)
+        {
+            if (this->_width - 1 < (x + xPos)) break;
+            retImageRawPixelData[(y * width + x) * 3 + 0] = this->_rawData[((y + yPos) * width + x + xPos) * 3 + 0];
+            retImageRawPixelData[(y * width + x) * 3 + 1] = this->_rawData[((y + yPos) * width + x + xPos) * 3 + 1];
+            retImageRawPixelData[(y * width + x) * 3 + 2] = this->_rawData[((y + yPos) * width + x + xPos) * 3 + 2];
+        }
+    }
 
     return ret;
 }
