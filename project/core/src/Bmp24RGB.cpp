@@ -3,7 +3,7 @@
 #include "charta/Bmp24RGB.hpp"
 
 
-#define WRITE_UINT32(addr,value) \
+#define WRITE_UINT32(addr, value) \
 *(addr + 0) = ((value & 0x000000ff) >> 0);\
 *(addr + 1) = ((value & 0x0000ff00) >> 8);\
 *(addr + 2) = ((value & 0x00ff0000) >> 16);\
