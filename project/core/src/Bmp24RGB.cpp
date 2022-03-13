@@ -85,6 +85,15 @@ Charta::Bmp24RGB::Bmp24RGB(const uint8_t* rawBmpData)
 
 }
 
+Charta::Bmp24RGB::Bmp24RGB(Charta::Bmp24RGB &&other)
+{
+    this->_rawPixelData = other._rawPixelData;
+    this->_headerData = other._headerData;
+
+    other._rawPixelData = nullptr;
+    other._headerData = nullptr;
+}
+
 uint32_t Charta::Bmp24RGB::GetFullSize() const
 {
     return _fullSize;

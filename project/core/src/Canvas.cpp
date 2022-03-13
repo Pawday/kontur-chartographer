@@ -11,13 +11,13 @@
 
 Charta::Canvas::Canvas(Poco::Path canvasContextDir) : _canvasContextDir(std::move(canvasContextDir))
 {
-    if (not Poco::File(this->_canvasContextDir).exists())
+    if (!Poco::File(this->_canvasContextDir).exists())
     {
         this->_exist = false;
         return;
     }
 
-    if (not Poco::File(_canvasContextDir).isDirectory())
+    if (!Poco::File(_canvasContextDir).isDirectory())
     {
         Poco::File(this->_canvasContextDir).remove();
         this->_exist = false;
@@ -73,7 +73,7 @@ void Charta::Canvas::Init(uint16_t width, uint16_t height)
     
     this->_exist = true;
 
-    if (not Poco::File(this->_canvasContextDir).exists())
+    if (!Poco::File(this->_canvasContextDir).exists())
     {
         Poco::File(this->_canvasContextDir).createDirectory();
         this->_canvasContextInfoFile =

@@ -18,6 +18,11 @@ namespace Charta
         Bmp24RGB(uint32_t width, uint32_t height);
 
         /**
+         * Move constructor
+         */
+        Bmp24RGB(Bmp24RGB&& other);
+
+        /**
          * create Bmp24RGB image from bmp file and allocate memory for it
          * (memory would be copied)
          */

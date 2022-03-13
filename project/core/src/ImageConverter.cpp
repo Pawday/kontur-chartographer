@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "charta/ImageConverter.hpp"
 
 Charta::Bmp24RGB Charta::ImageConverter::RawToBmp(RawImage24& inputRawImage)
@@ -33,9 +34,8 @@ Charta::Bmp24RGB Charta::ImageConverter::RawToBmp(RawImage24& inputRawImage)
             outputBMPPixelDataBuffer[bmpImagePixelPos * 3 + 2 + currentPaddingLevel] = inputRed;
         }
     }
-    
-    //Bmp24RGB destructor will not be called here
-    return ret;
+
+    return std::move(ret);
 }
 
 Charta::RawImage24 Charta::ImageConverter::BmpToRaw(Bmp24RGB& inputBMPImage)
@@ -72,7 +72,6 @@ Charta::RawImage24 Charta::ImageConverter::BmpToRaw(Bmp24RGB& inputBMPImage)
         }
     }
 
-    //RawImage24 destructor will not be called here
-    return ret;
+    return std::move(ret);
 }
 

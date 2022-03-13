@@ -27,10 +27,10 @@ TEST_CASE("canvas_create_test", "[canvas]")
 
     deleteDir(canvasContextDirNotExistedDir);
 
-    CHECK(not Poco::File(canvasContextDirNotExistedDir).exists());
+    CHECK(!Poco::File(canvasContextDirNotExistedDir).exists());
     Charta::Canvas canvas(canvasContextDirNotExistedDir);
 
-    CHECK(not canvas.Exist());
+    CHECK(!canvas.Exist());
     canvas.Init(100, 100);
     CHECK(Poco::File(canvasContextDirNotExistedDir).exists());
     CHECK(canvas.Exist());
@@ -45,7 +45,7 @@ TEST_CASE("canvas_create_test", "[canvas]")
     Charta::Canvas canvas2(canvasContextDirExisted);
 
     CHECK(Poco::File(canvasContextDirExisted).exists());
-    CHECK(not canvas2.Exist());
+    CHECK(!canvas2.Exist());
     canvas2.Init(100, 100);
     CHECK(canvas2.Exist());
 
