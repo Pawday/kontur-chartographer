@@ -27,10 +27,10 @@ TEST_CASE("canvas_create_test", "[canvas]")
 
     deleteDir(canvasContextDirNotExistedDir);
 
-    CHECK(!Poco::File(canvasContextDirNotExistedDir).exists());
+    CHECK(false == Poco::File(canvasContextDirNotExistedDir).exists());
     Charta::Canvas canvas(canvasContextDirNotExistedDir);
 
-    CHECK(!canvas.Exist());
+    CHECK(false == canvas.Exist());
     canvas.Init(100, 100);
     CHECK(Poco::File(canvasContextDirNotExistedDir).exists());
     CHECK(canvas.Exist());
@@ -45,7 +45,7 @@ TEST_CASE("canvas_create_test", "[canvas]")
     Charta::Canvas canvas2(canvasContextDirExisted);
 
     CHECK(Poco::File(canvasContextDirExisted).exists());
-    CHECK(!canvas2.Exist());
+    CHECK(false == canvas2.Exist());
     canvas2.Init(100, 100);
     CHECK(canvas2.Exist());
 
@@ -68,5 +68,25 @@ TEST_CASE("canvas_load_test", "[canvas]")
 
     CHECK(loadedCanvas.GetWidth() == 102);
     CHECK(loadedCanvas.GetHeight() == 342);
+
+}
+
+TEST_CASE("canvas_delete_test", "[canvas]")
+{
+    Poco::Path canvasContextDir("canvas_delete_test_dir");
+
+    deleteDir(canvasContextDir);
+
+    Charta::Canvas deleteCanvasTest(canvasContextDir);
+
+    CHECK(false == deleteCanvasTest.Exist());
+
+    deleteCanvasTest.Init(100, 100);
+
+    CHECK(deleteCanvasTest.Exist());
+
+    deleteCanvasTest.Delete();
+
+    CHECK(false == Poco::File(canvasContextDir).exists());
 
 }

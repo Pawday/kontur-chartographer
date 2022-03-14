@@ -106,3 +106,9 @@ uint16_t Charta::Canvas::GetHeight() const
 {
     return _height;
 }
+
+void Charta::Canvas::Delete()
+{
+    if (!this->_exist) return;
+    Poco::File(this->_canvasContextDir).remove(true);
+}
