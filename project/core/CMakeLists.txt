@@ -10,7 +10,5 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC POCO_NO_AUTOMATIC_LIBS)
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC
-        CONAN_PKG::stb
         CONAN_PKG::poco
-        CONAN_PKG::ms-gsl
 )
