@@ -7,9 +7,11 @@ Charta::RawImage24::RawImage24(uint16_t width, uint16_t height) : _width(width),
     memset(this->_rawData, 0, width * height * 3);
 }
 
-Charta::RawImage24::RawImage24(Charta::RawImage24&& other)
+Charta::RawImage24::RawImage24(Charta::RawImage24&& other) :
+_width(other._width),
+_height(other._height),
+_rawData(other._rawData)
 {
-    this->_rawData = other._rawData;
     other._rawData = nullptr;
 }
 

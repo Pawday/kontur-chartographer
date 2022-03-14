@@ -85,11 +85,13 @@ Charta::Bmp24RGB::Bmp24RGB(const uint8_t* rawBmpData)
 
 }
 
-Charta::Bmp24RGB::Bmp24RGB(Charta::Bmp24RGB &&other)
+Charta::Bmp24RGB::Bmp24RGB(Charta::Bmp24RGB &&other):
+width(other.width),
+height(other.height),
+_fullSize(other._fullSize),
+_headerData(other._headerData),
+_rawPixelData(other._rawPixelData)
 {
-    this->_rawPixelData = other._rawPixelData;
-    this->_headerData = other._headerData;
-
     other._rawPixelData = nullptr;
     other._headerData = nullptr;
 }

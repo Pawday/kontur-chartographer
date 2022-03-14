@@ -1,10 +1,5 @@
 #include <catch2/catch.hpp>
 
-#include <Poco/FileStream.h>
-#include <Poco/File.h>
-
-#include <charta/Bmp24RGB.hpp>
-#include <charta/RawImage24.hpp>
 #include <charta/ImageConverter.hpp>
 
 TEST_CASE("image_convert_bmp_to_raw_test", "[image_convert]")
@@ -56,5 +51,49 @@ TEST_CASE("image_convert_bmp_to_raw_test", "[image_convert]")
     CHECK(imagePixelData[15] == 0xab);
     CHECK(imagePixelData[16] == 0x00);
     CHECK(imagePixelData[17] == 0xba);
+
+}
+
+TEST_CASE("image_convert_raw_to_bmp_test", "[image_convert]")
+{
+    //RAW -> BMP -> RAW
+
+    using namespace Charta;
+    
+    RawImage24 rawImageInput(3, 3);
+
+    uint8_t* inputImageRawPixelData = rawImageInput.GetRawData();
+
+    for (int i = 0; i < 9; i++)
+    {
+        inputImageRawPixelData[i * 3 + 0] = i * 3 + 0;
+        inputImageRawPixelData[i * 3 + 1] = i * 3 + 1;
+        inputImageRawPixelData[i * 3 + 2] = i * 3 + 2;
+    }
+
+    Bmp24RGB bmpOutput = ImageConverter::RawToBmp(rawImageInput);
+
+    CHECK(bmpOutput.GetHeight() == 3);
+    CHECK(bmpOutput.GetWidth() == 3);
+
+    uint8_t* bmpImageInputRawBuffer = new uint8_t[bmpOutput.GetFullSize()];
+    bmpOutput.WriteToBuffer(bmpImageInputRawBuffer, bmpOutput.GetFullSize(), 0);
+    
+    Bmp24RGB bmpImageInput(bmpImageInputRawBuffer);
+    delete[] bmpImageInputRawBuffer;
+
+    RawImage24 bmpToRawResult = ImageConverter::BmpToRaw(bmpImageInput);
+
+    CHECK(bmpToRawResult.GetWidth() == 3);
+    CHECK(bmpToRawResult.GetHeight() == 3);
+
+    uint8_t* rawImageOutputPixelData = bmpToRawResult.GetRawData();
+
+    for (int i = 0; i < 9; i++)
+    {
+        CHECK(rawImageOutputPixelData[i * 3 + 0] == i * 3 + 0);
+        CHECK(rawImageOutputPixelData[i * 3 + 1] == i * 3 + 1);
+        CHECK(rawImageOutputPixelData[i * 3 + 2] == i * 3 + 2);
+    }
 
 }
