@@ -5,6 +5,7 @@
 #include <charta/RawImage24.hpp>
 
 #define CANVAS_CONTEXT_INFO_FILE_NAME ".canvasInfo"
+#define CANVAS_CHUNK_SIZE 100
 
 namespace Charta
 {
@@ -24,6 +25,9 @@ namespace Charta
         uint16_t GetWidth() const;
 
         uint16_t GetHeight() const;
+
+        RawImage24 GetChunkAt(uint16_t x, uint16_t y);
+        void SetChunkAt(uint16_t x, uint16_t y, RawImage24 chunkImage);
 
     private:
         void LoadInfo();

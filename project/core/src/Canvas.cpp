@@ -6,6 +6,8 @@
 #include <Poco/JSON/Parser.h>
 
 #include <charta/Canvas.hpp>
+#include <charta/Bmp24RGB.hpp>
+#include <charta/ImageConverter.hpp>
 
 
 
@@ -112,3 +114,26 @@ void Charta::Canvas::Delete()
     if (!this->_exist) return;
     Poco::File(this->_canvasContextDir).remove(true);
 }
+
+
+Charta::RawImage24 Charta::Canvas::GetChunkAt(uint16_t x, uint16_t y)
+{
+    Poco::File chunkFile((std::stringstream() << this->_canvasContextDir.toString() << Poco::Path::separator() << "chunk_" << x << "_" << y << ".bmp").str());
+
+    if (false == chunkFile.exists())
+        return RawImage24(CANVAS_CHUNK_SIZE, CANVAS_CHUNK_SIZE);
+
+
+    Poco::FileInputStream chunkFileIS(chunkFile.path());
+
+    uint8_t* readBuff = new uint8_t[chunkFile.getSize()];
+    chunkFileIS.read((char*) readBuff, chunkFile.getSize());
+    chunkFileIS.close();
+
+    Bmp24RGB bmpChunk(readBuff);
+    delete[] readBuff;
+
+    return Charta::ImageConverter::BmpToRaw(bmpChunk);
+}
+
+
