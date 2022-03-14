@@ -82,7 +82,7 @@ TEST_CASE("canvas_delete_test", "[canvas]")
 
     CHECK(false == deleteCanvasTest.Exist());
 
-    deleteCanvasTest.Init(100, 100);
+    deleteCanvasTest.Init(CANVAS_CHUNK_SIZE, CANVAS_CHUNK_SIZE);
 
     CHECK(deleteCanvasTest.Exist());
 
@@ -94,26 +94,26 @@ TEST_CASE("canvas_delete_test", "[canvas]")
 
 TEST_CASE("canvas_get_chunk_test", "[canvas]")
 {
-    Poco::Path canvasContextDir = "canvas_get_chunk_test";
+    Poco::Path canvasContextDir = "canvas_get_chunk_test_dir";
 
     deleteDir(canvasContextDir);
 
     Charta::Canvas canvas(canvasContextDir);
 
-    canvas.Init(100, 100);
+    canvas.Init(CANVAS_CHUNK_SIZE, CANVAS_CHUNK_SIZE);
     
-    Charta::RawImage24 image4test(100, 100);
+    Charta::RawImage24 image4test(CANVAS_CHUNK_SIZE, CANVAS_CHUNK_SIZE);
 
     uint8_t* imageRawData = image4test.GetRawData();
 
-    for (int y = 0; y < 100; y++)
-        for (int x = 0; x < 100; x++) 
+    for (int y = 0; y < CANVAS_CHUNK_SIZE; y++)
+        for (int x = 0; x < CANVAS_CHUNK_SIZE; x++) 
         {
             if (x % 2 == 0)
             {
-                imageRawData[(y * 100 + x) * 3 + 0] = 0xff;
-                imageRawData[(y * 100 + x) * 3 + 1] = 0xff;
-                imageRawData[(y * 100 + x) * 3 + 2] = 0xff;
+                imageRawData[(y * CANVAS_CHUNK_SIZE + x) * 3 + 0] = 0xff;
+                imageRawData[(y * CANVAS_CHUNK_SIZE + x) * 3 + 1] = 0xff;
+                imageRawData[(y * CANVAS_CHUNK_SIZE + x) * 3 + 2] = 0xff;
             }
         };
 
@@ -139,22 +139,57 @@ TEST_CASE("canvas_get_chunk_test", "[canvas]")
 
     bool testStatus = true;
 
-    for (int y = 0; y < 100 && testStatus; y++)
-        for (int x = 0; x < 100 && testStatus; x++)
+    for (int y = 0; y < CANVAS_CHUNK_SIZE && testStatus; y++)
+        for (int x = 0; x < CANVAS_CHUNK_SIZE && testStatus; x++)
         {
             if (x % 2 == 0)
             {
-                testStatus &= chunkResRawData[(y * 100 + x) * 3 + 0] == 0xff;
-                testStatus &= chunkResRawData[(y * 100 + x) * 3 + 1] == 0xff;
-                testStatus &= chunkResRawData[(y * 100 + x) * 3 + 2] == 0xff;
+                testStatus &= chunkResRawData[(y * CANVAS_CHUNK_SIZE + x) * 3 + 0] == 0xff;
+                testStatus &= chunkResRawData[(y * CANVAS_CHUNK_SIZE + x) * 3 + 1] == 0xff;
+                testStatus &= chunkResRawData[(y * CANVAS_CHUNK_SIZE + x) * 3 + 2] == 0xff;
             }
             else
             {
-                testStatus &= chunkResRawData[(y * 100 + x) * 3 + 0] == 0x00;
-                testStatus &= chunkResRawData[(y * 100 + x) * 3 + 1] == 0x00;
-                testStatus &= chunkResRawData[(y * 100 + x) * 3 + 2] == 0x00;
+                testStatus &= chunkResRawData[(y * CANVAS_CHUNK_SIZE + x) * 3 + 0] == 0x00;
+                testStatus &= chunkResRawData[(y * CANVAS_CHUNK_SIZE + x) * 3 + 1] == 0x00;
+                testStatus &= chunkResRawData[(y * CANVAS_CHUNK_SIZE + x) * 3 + 2] == 0x00;
             }
         }
 
     CHECK(testStatus);
+}
+
+TEST_CASE("canvas_set_chunk_test", "[canvas]")
+{
+    Poco::Path canvasContextDir = "canvas_set_chunk_test_dir";
+
+    deleteDir(canvasContextDir);
+
+    Charta::Canvas canvas(canvasContextDir);
+
+    canvas.Init(1000, 1000);
+    
+    for (int i = 0; i < 1000 / CANVAS_CHUNK_SIZE; i++) 
+    {
+        Charta::RawImage24 chunkImage(CANVAS_CHUNK_SIZE, CANVAS_CHUNK_SIZE);
+        uint8_t* chunkPixelRawData = chunkImage.GetRawData();
+        
+        chunkPixelRawData[3 * i + 0] = 0xff;
+        chunkPixelRawData[3 * i + 1] = 0xff;
+        chunkPixelRawData[3 * i + 2] = 0xff;
+        canvas.SetChunkAt(i, i, chunkImage);
+    }
+
+
+
+    for (int i = 0; i < 1000 / CANVAS_CHUNK_SIZE; i++)
+    {
+        Charta::RawImage24 chunkImage = canvas.GetChunkAt(i, i);
+        uint8_t* chunkImageRawPixelData = chunkImage.GetRawData();
+
+        CHECK(chunkImageRawPixelData[3 * i + 0] == 0xff);
+        CHECK(chunkImageRawPixelData[3 * i + 1] == 0xff);
+        CHECK(chunkImageRawPixelData[3 * i + 2] == 0xff);
+
+    }
 }

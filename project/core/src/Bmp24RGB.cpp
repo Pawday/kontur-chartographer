@@ -110,6 +110,11 @@ void Charta::Bmp24RGB::WriteToBuffer(uint8_t* buffer, size_t bufferSize, size_t 
         buffer[offset + 54 + i] = this->_rawPixelData[i];
 }
 
+void Charta::Bmp24RGB::WriteToBuffer(uint8_t* buffer)
+{
+    this->WriteToBuffer(buffer, this->_fullSize, 0);
+}
+
 uint8_t *Charta::Bmp24RGB::GetRawPixelData() const
 {
     return _rawPixelData;

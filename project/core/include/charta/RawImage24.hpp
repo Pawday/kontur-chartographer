@@ -17,7 +17,7 @@ namespace Charta
 
         void MergeImage(uint16_t xPos, uint16_t yPos, const RawImage24& image);
 
-        RawImage24 GetUncroppedSubImage(uint16_t xPos, uint16_t yPos, uint16_t width, uint16_t height);
+        RawImage24 GetUncroppedSubImage(uint16_t xPos, uint16_t yPos, uint16_t width, uint16_t height) const;
 
         uint16_t GetWidth() const;
 

@@ -26,8 +26,21 @@ namespace Charta
 
         uint16_t GetHeight() const;
 
+        /**
+         * Load chunk from file system
+         * @param x - chunk x position
+         * @param y - chunk y position
+         * @return loaded raw image
+         */
         RawImage24 GetChunkAt(uint16_t x, uint16_t y);
-        void SetChunkAt(uint16_t x, uint16_t y, RawImage24 chunkImage);
+
+        /**
+         * Write chunk to file system
+         * @param x - chunk x position
+         * @param y - chunk y position
+         * @param chunkImage
+         */
+        void SetChunkAt(uint16_t x, uint16_t y, const RawImage24& chunkImage);
 
     private:
         void LoadInfo();

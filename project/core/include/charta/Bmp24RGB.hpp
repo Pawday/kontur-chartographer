@@ -30,6 +30,12 @@ namespace Charta
 
         void WriteToBuffer(uint8_t* buffer, size_t bufferSize ,size_t offset);
 
+        /**
+         * call WriteToBuffer(buffer, this._fullSize ,0);
+         * @param buffer
+         */
+        void WriteToBuffer(uint8_t* buffer);
+
         ~Bmp24RGB();
 
         uint32_t GetFullSize() const;

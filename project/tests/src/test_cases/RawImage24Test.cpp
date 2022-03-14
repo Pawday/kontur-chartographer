@@ -13,13 +13,17 @@ TEST_CASE("raw_image_create_test", "[image]")
 
     uint8_t* imageRawData = image.GetRawData();
 
+    bool testStatus = true;
+
     //image should be black
-    for (int i = 0; i < (width * height); i++)
+    for (int i = 0; i < (width * height) && testStatus; i++)
     {
-        CHECK(imageRawData[i * 3 + 0] == 0);
-        CHECK(imageRawData[i * 3 + 1] == 0);
-        CHECK(imageRawData[i * 3 + 2] == 0);
+        testStatus &= imageRawData[i * 3 + 0] == 0;
+        testStatus &= imageRawData[i * 3 + 1] == 0;
+        testStatus &= imageRawData[i * 3 + 2] == 0;
     }
+
+    CHECK(testStatus);
 }
 
 TEST_CASE("raw_image_combine_test", "[image]")
@@ -39,25 +43,29 @@ TEST_CASE("raw_image_combine_test", "[image]")
 
     image1.MergeImage(0, 0, image2);
 
-    for (int y = 0; y < 10; y++)
+    bool testStatus = true;
+
+    for (int y = 0; y < 10 && testStatus; y++)
     {
-        for (int x = 0; x < 10; x++)
+        for (int x = 0; x < 10 && testStatus; x++)
         {
             size_t pixelPosition = (y * 10 + x) * 3;
             if (x < 5 && y < 5)
             {
-                CHECK(image1RawPixelData[pixelPosition + 0] == 0);
-                CHECK(image1RawPixelData[pixelPosition + 1] == 0);
-                CHECK(image1RawPixelData[pixelPosition + 2] == 0);
+                testStatus &= image1RawPixelData[pixelPosition + 0] == 0;
+                testStatus &= image1RawPixelData[pixelPosition + 1] == 0;
+                testStatus &= image1RawPixelData[pixelPosition + 2] == 0;
             }
             else
             {
-                CHECK(image1RawPixelData[pixelPosition + 0] == 0xff);
-                CHECK(image1RawPixelData[pixelPosition + 1] == 0xff);
-                CHECK(image1RawPixelData[pixelPosition + 2] == 0xff);
+                testStatus &= image1RawPixelData[pixelPosition + 0] == 0xff;
+                testStatus &= image1RawPixelData[pixelPosition + 1] == 0xff;
+                testStatus &= image1RawPixelData[pixelPosition + 2] == 0xff;
             }
         }
     }
+
+    CHECK(testStatus);
 
 }
 
@@ -86,25 +94,26 @@ TEST_CASE("raw_image_get_sub_image_uncropped_test", "[image]")
 
     uint8_t* subImageRawData = subImage.GetRawData();
 
-    for (int y = 0; y < 10; y++)
+    bool testStatus = true;
+
+    for (int y = 0; y < 10 && testStatus; y++)
     {
-        for (int x = 0; x < 10; x++)
+        for (int x = 0; x < 10 && testStatus; x++)
         {
             if (y < 5 && x < 5)
             {
-                if (subImageRawData[(y * 10 + x) * 3 + 0] != 0xff) FAIL();
-                if (subImageRawData[(y * 10 + x) * 3 + 1] != 0xff) FAIL();
-                if (subImageRawData[(y * 10 + x) * 3 + 1] != 0xff) FAIL();
+                testStatus &= subImageRawData[(y * 10 + x) * 3 + 0] == 0xff;
+                testStatus &= subImageRawData[(y * 10 + x) * 3 + 1] == 0xff;
+                testStatus &= subImageRawData[(y * 10 + x) * 3 + 1] == 0xff;
             }
             else
             {
-                if (subImageRawData[(y * 10 + x) * 3 + 0] != 0x00) FAIL();
-                if (subImageRawData[(y * 10 + x) * 3 + 1] != 0x00) FAIL();
-                if (subImageRawData[(y * 10 + x) * 3 + 1] != 0x00) FAIL();
+                testStatus &= subImageRawData[(y * 10 + x) * 3 + 0] == 0x00;
+                testStatus &= subImageRawData[(y * 10 + x) * 3 + 1] == 0x00;
+                testStatus &= subImageRawData[(y * 10 + x) * 3 + 1] == 0x00;
             }
         }
     }
 
-
-    
+    CHECK(testStatus);
 }

@@ -41,7 +41,7 @@ void Charta::RawImage24::MergeImage(uint16_t xPos, uint16_t yPos, const RawImage
     }
 }
 
-Charta::RawImage24 Charta::RawImage24::GetUncroppedSubImage(uint16_t xPos, uint16_t yPos, uint16_t width, uint16_t height)
+Charta::RawImage24 Charta::RawImage24::GetUncroppedSubImage(uint16_t xPos, uint16_t yPos, uint16_t width, uint16_t height) const
 {
     RawImage24 ret(width, height);
 

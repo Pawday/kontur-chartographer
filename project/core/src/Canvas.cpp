@@ -118,7 +118,8 @@ void Charta::Canvas::Delete()
 
 Charta::RawImage24 Charta::Canvas::GetChunkAt(uint16_t x, uint16_t y)
 {
-    Poco::File chunkFile((std::stringstream() << this->_canvasContextDir.toString() << Poco::Path::separator() << "chunk_" << x << "_" << y << ".bmp").str());
+    Poco::File chunkFile((std::stringstream() <<
+    this->_canvasContextDir.toString() << Poco::Path::separator() << "chunk_" << x << "_" << y << ".bmp").str());
 
     if (false == chunkFile.exists())
         return RawImage24(CANVAS_CHUNK_SIZE, CANVAS_CHUNK_SIZE);
@@ -133,7 +134,37 @@ Charta::RawImage24 Charta::Canvas::GetChunkAt(uint16_t x, uint16_t y)
     Bmp24RGB bmpChunk(readBuff);
     delete[] readBuff;
 
-    return Charta::ImageConverter::BmpToRaw(bmpChunk);
+    return Charta::ImageConverter::BmpToRaw(bmpChunk).GetUncroppedSubImage(0, 0, CANVAS_CHUNK_SIZE, CANVAS_CHUNK_SIZE);
+}
+
+void Charta::Canvas::SetChunkAt(uint16_t x, uint16_t y, const RawImage24& chunkImage)
+{
+    if (this->_width < x * CANVAS_CHUNK_SIZE) return;
+    if (this->_height < y * CANVAS_CHUNK_SIZE) return;
+
+    Poco::File chunkFile((std::stringstream() <<
+    this->_canvasContextDir.toString() << Poco::Path::separator() << "chunk_" << x << "_" << y << ".bmp").str());
+
+    if (false == chunkFile.exists())
+        chunkFile.createFile();
+
+    Poco::FileOutputStream chunkFileOS(chunkFile.path());
+
+    RawImage24 sizedChunkImage = chunkImage.GetUncroppedSubImage(0, 0, CANVAS_CHUNK_SIZE, CANVAS_CHUNK_SIZE);
+
+    Bmp24RGB chunkImageBmpVersion = ImageConverter::RawToBmp(sizedChunkImage);
+
+    char* writeBuffer = new char[chunkImageBmpVersion.GetFullSize()];
+
+    chunkImageBmpVersion.WriteToBuffer((uint8_t*)writeBuffer);
+
+    chunkFileOS.write(writeBuffer, chunkImageBmpVersion.GetFullSize());
+
+    chunkFileOS.flush();
+    chunkFileOS.close();
+
+    delete[] writeBuffer;
+
 }
 
 
