@@ -199,7 +199,6 @@ TEST_CASE("canvas_get_image_test", "[canvas]")
 {
     Poco::Path canvasContextDir = "canvas_get_image_test";
 
-    deleteDir(canvasContextDir);
 
     Charta::Canvas canvas(canvasContextDir);
 
@@ -242,4 +241,30 @@ TEST_CASE("canvas_get_image_test", "[canvas]")
     os.close();
 
     delete[] writeBuff;
+}
+
+TEST_CASE("canvas_append_image_test", "[canvas]")
+{
+    Poco::Path canvasContextDir = "canvas_append_image_test";
+
+    deleteDir(canvasContextDir);
+
+    Charta::Canvas canvas(canvasContextDir);
+
+    deleteDir(canvasContextDir);
+
+    canvas.Init(1000, 1000);
+
+    Charta::RawImage24 appendedImage(300, 300);
+
+    uint8_t* imageRawData = appendedImage.GetRawData();
+
+    for (int i = 0; i < 300 * 300; i++)
+    {
+        imageRawData[i * 3 + 0] = 0xff;
+        imageRawData[i * 3 + 1] = 0xff;
+        imageRawData[i * 3 + 2] = 0xff;
+    }
+
+    canvas.AppendImage(110, 130, appendedImage);
 }

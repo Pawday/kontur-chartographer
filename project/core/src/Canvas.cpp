@@ -167,6 +167,39 @@ void Charta::Canvas::SetChunkAt(uint16_t x, uint16_t y, const RawImage24& chunkI
 
 }
 
+void Charta::Canvas::AppendImage(uint16_t xPos, uint16_t yPos, Charta::RawImage24& image)
+{
+    uint16_t affectedChunkTopLeftCoordX = xPos / CANVAS_CHUNK_SIZE;
+    uint16_t affectedChunkTopLeftCoordY = yPos / CANVAS_CHUNK_SIZE;
+    uint16_t affectedChunkBottomRightCoordX = (xPos + image.GetWidth()) / CANVAS_CHUNK_SIZE;
+    uint16_t affectedChunkBottomRightCoordY = (yPos + image.GetHeight()) / CANVAS_CHUNK_SIZE;
+
+    uint16_t modifiedChunkAmountHorizontal = (affectedChunkBottomRightCoordX - affectedChunkTopLeftCoordX + 1);
+    uint16_t modifiedChunkAmountVertical = (affectedChunkBottomRightCoordY - affectedChunkTopLeftCoordY + 1);
+
+    RawImage24 affectedImageAligned = this->GetImage(affectedChunkTopLeftCoordX * CANVAS_CHUNK_SIZE,
+                                               affectedChunkTopLeftCoordY * CANVAS_CHUNK_SIZE,
+                                               modifiedChunkAmountHorizontal * CANVAS_CHUNK_SIZE,
+                                               modifiedChunkAmountVertical * CANVAS_CHUNK_SIZE);
+
+    affectedImageAligned.MergeImage(xPos - affectedChunkTopLeftCoordX * CANVAS_CHUNK_SIZE,
+                                    yPos - affectedChunkTopLeftCoordY * CANVAS_CHUNK_SIZE,
+                                    image);
+
+    for (uint16_t chunkYPos = affectedChunkTopLeftCoordY;
+         chunkYPos <= affectedChunkTopLeftCoordY + affectedChunkBottomRightCoordY; chunkYPos++)
+        for (uint16_t chunkXPos = affectedChunkTopLeftCoordX;
+             chunkXPos <= affectedChunkTopLeftCoordX + affectedChunkBottomRightCoordX; chunkXPos++)
+        {
+            RawImage24 chunkImage = affectedImageAligned.GetUncroppedSubImage(
+                    (chunkXPos - affectedChunkTopLeftCoordX) * CANVAS_CHUNK_SIZE,
+                    (chunkYPos - affectedChunkTopLeftCoordY) * CANVAS_CHUNK_SIZE,
+                    CANVAS_CHUNK_SIZE, CANVAS_CHUNK_SIZE);
+
+            this->SetChunkAt(chunkXPos, chunkYPos, chunkImage);
+        }
+}
+
 Charta::RawImage24 Charta::Canvas::GetImage(uint16_t xPos, uint16_t yPos, uint16_t width, uint16_t height)
 {
     uint16_t affectedChunkTopLeftCoordX = xPos / CANVAS_CHUNK_SIZE;
