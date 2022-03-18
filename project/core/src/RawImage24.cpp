@@ -54,13 +54,13 @@ Charta::RawImage24 Charta::RawImage24::GetUncroppedSubImage(uint16_t xPos, uint1
         for (int x = 0; x < width; x++)
         {
             if (this->_width - 1 < (x + xPos)) break;
-            retImageRawPixelData[(y * width + x) * 3 + 0] = this->_rawData[((y + yPos) * width + x + xPos) * 3 + 0];
-            retImageRawPixelData[(y * width + x) * 3 + 1] = this->_rawData[((y + yPos) * width + x + xPos) * 3 + 1];
-            retImageRawPixelData[(y * width + x) * 3 + 2] = this->_rawData[((y + yPos) * width + x + xPos) * 3 + 2];
+            retImageRawPixelData[(y * width + x) * 3 + 0] = this->_rawData[((y + yPos) * this->_width + x + xPos) * 3 + 0];
+            retImageRawPixelData[(y * width + x) * 3 + 1] = this->_rawData[((y + yPos) * this->_width + x + xPos) * 3 + 1];
+            retImageRawPixelData[(y * width + x) * 3 + 2] = this->_rawData[((y + yPos) * this->_width + x + xPos) * 3 + 2];
         }
     }
 
-    return ret;
+    return std::move(ret);
 }
 
 uint16_t Charta::RawImage24::GetWidth() const

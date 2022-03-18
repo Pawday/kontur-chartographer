@@ -1,3 +1,4 @@
+#include <sstream>
 #include <catch2/catch.hpp>
 
 #include <Poco/Path.h>
@@ -192,4 +193,53 @@ TEST_CASE("canvas_set_chunk_test", "[canvas]")
         CHECK(chunkImageRawPixelData[3 * i + 2] == 0xff);
 
     }
+}
+
+TEST_CASE("canvas_get_image_test", "[canvas]")
+{
+    Poco::Path canvasContextDir = "canvas_get_image_test";
+
+    deleteDir(canvasContextDir);
+
+    Charta::Canvas canvas(canvasContextDir);
+
+    if (false == canvas.Exist())
+        canvas.Init(1000, 1000);
+    
+    Charta::RawImage24 chunk0_0(CANVAS_CHUNK_SIZE, CANVAS_CHUNK_SIZE);
+    Charta::RawImage24 chunk1_1(CANVAS_CHUNK_SIZE, CANVAS_CHUNK_SIZE);
+
+    uint8_t* chunk0_0_rawPixelData = chunk0_0.GetRawData();
+    uint8_t* chunk1_1_rawPixelData = chunk1_1.GetRawData();
+
+    for (int i = 0; i < CANVAS_CHUNK_SIZE * CANVAS_CHUNK_SIZE; i++)
+    {
+        chunk0_0_rawPixelData[i * 3 + 0] = 0xff;
+        chunk0_0_rawPixelData[i * 3 + 1] = 0xff;
+        chunk0_0_rawPixelData[i * 3 + 2] = 0xff;
+
+        chunk1_1_rawPixelData[i * 3 + 0] = 0x55;
+        chunk1_1_rawPixelData[i * 3 + 1] = 0x55;
+        chunk1_1_rawPixelData[i * 3 + 2] = 0x55;
+    }
+    canvas.SetChunkAt(0, 0, chunk0_0);
+    canvas.SetChunkAt(1, 1, chunk1_1);
+
+    Charta::RawImage24 res = canvas.GetImage(0, 0, 400, 400);
+
+    Charta::Bmp24RGB resBmp = Charta::ImageConverter::RawToBmp(res);
+
+    Poco::File bmpOutFile = (std::stringstream() << "canvas_get_image_test" << Poco::Path::separator() << "out.bmp").str();
+    bmpOutFile.createFile();
+    Poco::FileOutputStream os(bmpOutFile.path());
+
+    char* writeBuff = new char[resBmp.GetFullSize()];
+
+    resBmp.WriteToBuffer((uint8_t*) writeBuff);
+
+    os.write(writeBuff, resBmp.GetFullSize());
+
+    os.close();
+
+    delete[] writeBuff;
 }

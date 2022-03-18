@@ -20,7 +20,8 @@ namespace Charta
 
         void Delete();
 
-        void AppendImage(RawImage24 image, uint16_t xPos, uint16_t yPos);
+        void AppendImage(uint16_t xPos, uint16_t yPos, RawImage24& image);
+        RawImage24 GetImage(uint16_t xPos, uint16_t yPos, uint16_t width, uint16_t height);
 
         uint16_t GetWidth() const;
 

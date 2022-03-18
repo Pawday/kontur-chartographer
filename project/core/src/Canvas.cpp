@@ -167,4 +167,29 @@ void Charta::Canvas::SetChunkAt(uint16_t x, uint16_t y, const RawImage24& chunkI
 
 }
 
+Charta::RawImage24 Charta::Canvas::GetImage(uint16_t xPos, uint16_t yPos, uint16_t width, uint16_t height)
+{
+    uint16_t affectedChunkTopLeftCoordX = xPos / CANVAS_CHUNK_SIZE;
+    uint16_t affectedChunkTopLeftCoordY = yPos / CANVAS_CHUNK_SIZE;
+    uint16_t affectedChunkBottomRightCoordX = (xPos + width) / CANVAS_CHUNK_SIZE;
+    uint16_t affectedChunkBottomRightCoordY = (yPos + height) / CANVAS_CHUNK_SIZE;
+
+    RawImage24 retChunkAligned((affectedChunkBottomRightCoordX - affectedChunkTopLeftCoordX + 1) * CANVAS_CHUNK_SIZE,
+                               (affectedChunkBottomRightCoordY - affectedChunkTopLeftCoordY + 1) * CANVAS_CHUNK_SIZE);
+
+
+    for (uint16_t chunkYPos = affectedChunkTopLeftCoordY;
+         chunkYPos <= affectedChunkTopLeftCoordY + affectedChunkBottomRightCoordY; chunkYPos++)
+        for (uint16_t chunkXPos = affectedChunkTopLeftCoordX;
+             chunkXPos <= affectedChunkTopLeftCoordX + affectedChunkBottomRightCoordX; chunkXPos++) 
+        {
+            RawImage24 chunkImage = this->GetChunkAt(chunkXPos, chunkYPos);
+            retChunkAligned.MergeImage((chunkXPos - affectedChunkTopLeftCoordX) * CANVAS_CHUNK_SIZE,
+                                       (chunkYPos - affectedChunkTopLeftCoordY) * CANVAS_CHUNK_SIZE, chunkImage);
+        }
+
+    return retChunkAligned.GetUncroppedSubImage(xPos - affectedChunkTopLeftCoordX * CANVAS_CHUNK_SIZE,
+                                                yPos - affectedChunkTopLeftCoordY * CANVAS_CHUNK_SIZE, width, height);
+}
+
 
