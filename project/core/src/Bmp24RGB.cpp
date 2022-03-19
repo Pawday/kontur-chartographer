@@ -17,7 +17,7 @@
 
 Charta::Bmp24RGB::Bmp24RGB(uint32_t width, uint32_t height) : width(width), height(height)
 {
-    uint32_t pixelRawDataSize =  width * height * 4;
+    uint32_t pixelRawDataSize =  ((width * 24 + 31) / 32) * height * 4;
 
     this->_rawPixelData = new uint8_t[pixelRawDataSize];
     this->_headerData = new uint8_t[54];
