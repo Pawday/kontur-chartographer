@@ -77,3 +77,17 @@ uint8_t *Charta::RawImage24::GetRawData() const
 {
     return _rawData;
 }
+
+Charta::RawImage24& Charta::RawImage24::operator=(RawImage24&& other) noexcept
+{
+    if (this == &other) return *this;
+
+    this->_rawData = other._rawData;
+
+    other._rawData = nullptr;
+
+    this->_width = other._width;
+    this->_height = other._height;
+
+    return *this;
+}

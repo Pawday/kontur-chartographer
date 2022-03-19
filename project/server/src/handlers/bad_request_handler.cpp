@@ -8,7 +8,7 @@ using namespace Poco::Net;
 
 void Charta::BadRequestHandler::handleRequest(HTTPServerRequest& request, HTTPServerResponse& response)
 {
-    response.setStatus(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
+    response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
     if (false == this->_message.empty())
         response.send() << this->_message;
     else

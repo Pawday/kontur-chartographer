@@ -10,6 +10,7 @@
 
 using namespace Poco::Net;
 
+
 void Charta::ImageAppendHandler::handleRequest(HTTPServerRequest &request, HTTPServerResponse &response)
 {
     std::istream &istream = request.stream();
@@ -25,16 +26,59 @@ void Charta::ImageAppendHandler::handleRequest(HTTPServerRequest &request, HTTPS
 
     RawImage24 rawInputImage = Charta::ImageConverter::BmpToRaw(inputBmp);
 
+    rawInputImage = rawInputImage.GetUncroppedSubImage(0, 0, this->_width, this->_height);
+
+    if (this->_yPos < 0 && this->_xPos < 0)
+    {
+        if (-this->_xPos > this->_width || -this->_yPos > this->_height)
+        {
+            response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
+            response.send();
+            return;
+        }
+        this->_width -= (-this->_xPos);
+        this->_height -= -(this->_yPos);
+        rawInputImage = rawInputImage.GetUncroppedSubImage(-this->_xPos, -this->_yPos, this->_width, this->_height);
+        this->_xPos = 0;
+        this->_yPos = 0;
+    }
+
+    if (this->_xPos < 0)
+    {
+        if (-this->_xPos > this->_width)
+        {
+            response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_BAD_REQUEST);
+            response.send();
+            return;
+        }
+        this->_width -= (-this->_xPos);
+        rawInputImage = rawInputImage.GetUncroppedSubImage(0, -this->_yPos, this->_width, this->_height);
+        this->_xPos = 0;
+    }
+
+    if (this->_yPos < 0)
+    {
+        if (-this->_yPos > this->_height)
+        {
+            response.setStatusAndReason(HTTPResponse::HTTP_BAD_REQUEST);
+            response.send();
+            return;
+        }
+        this->_height -= -(this->_yPos);
+        rawInputImage = rawInputImage.GetUncroppedSubImage(-this->_xPos, 0, this->_width, this->_height);
+        this->_yPos = 0;
+    }
+
     this->_canvas.AppendImage(this->_xPos, this->_yPos, rawInputImage);
 
-    response.setStatus(HTTPResponse::HTTP_OK);
+    response.setStatusAndReason(HTTPResponse::HTTP_OK);
     response.send();
 }
 
 Charta::ImageAppendHandler::ImageAppendHandler
 (
     Charta::Canvas canvas,
-    uint16_t xPos, uint16_t yPos,
+    int32_t xPos, int32_t yPos,
     uint16_t width,
     uint16_t height
 ):

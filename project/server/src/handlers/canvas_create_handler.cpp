@@ -8,7 +8,7 @@ using namespace Poco::Net;
 
 void Charta::CanvasCreatedHandler::handleRequest(HTTPServerRequest &request, HTTPServerResponse &response)
 {
-    response.setStatus(HTTPResponse::HTTP_CREATED);
+    response.setStatusAndReason(HTTPResponse::HTTP_CREATED);
     response.send() << this->_canvasStringId;
 }
 

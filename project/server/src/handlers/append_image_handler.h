@@ -9,12 +9,12 @@ namespace Charta
     class ImageAppendHandler : public Poco::Net::HTTPRequestHandler
     {
     public:
-        ImageAppendHandler(Canvas canvas, uint16_t xPos, uint16_t yPos, uint16_t width, uint16_t height);
+        ImageAppendHandler(Canvas canvas, int32_t xPos, int32_t yPos, uint16_t width, uint16_t height);
 
     public:
         Charta::Canvas _canvas;
-        uint16_t _xPos;
-        uint16_t _yPos;
+        int32_t _xPos;
+        int32_t _yPos;
         uint16_t _width;
         uint16_t _height;
 

@@ -13,6 +13,8 @@ namespace Charta
         RawImage24(uint16_t width, uint16_t height);
         RawImage24(RawImage24&& other);
 
+        RawImage24& operator=(RawImage24&& other) noexcept;
+
         ~RawImage24();
 
         void MergeImage(uint16_t xPos, uint16_t yPos, const RawImage24& image);
