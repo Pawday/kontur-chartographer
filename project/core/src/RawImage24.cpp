@@ -82,6 +82,8 @@ Charta::RawImage24& Charta::RawImage24::operator=(RawImage24&& other) noexcept
 {
     if (this == &other) return *this;
 
+    delete[] this->_rawData;
+
     this->_rawData = other._rawData;
 
     other._rawData = nullptr;

@@ -39,14 +39,6 @@ void Charta::GetImageHandler::handleRequest(HTTPServerRequest &request, HTTPServ
             SendNoIntersectionError(response);
             return;
         }
-        uint16_t canvasHeight = this->_canvas.GetHeight();
-        uint16_t canvasWidth = this->_canvas.GetWidth();
-
-        if (this->_xPos > canvasWidth || this->_yPos > canvasHeight)
-        {
-            SendNoIntersectionError(response);
-            return;
-        }
 
         RawImage24 retImage(this->_width, this->_height);
 
@@ -72,6 +64,8 @@ void Charta::GetImageHandler::handleRequest(HTTPServerRequest &request, HTTPServ
                     this->_canvas.GetImage(0, 0, this->_width + this->_xPos, this->_height + this->_yPos));
         }
 
+
+
         Charta::Bmp24RGB bmpRes = Charta::ImageConverter::RawToBmp(retImage);
         uint32_t bmpSize = bmpRes.GetFullSize();
         uint8_t* buffer = new uint8_t[bmpSize];
@@ -83,6 +77,13 @@ void Charta::GetImageHandler::handleRequest(HTTPServerRequest &request, HTTPServ
         return;
     }
 
+    uint16_t canvasHeight = this->_canvas.GetHeight();
+    uint16_t canvasWidth = this->_canvas.GetWidth();
+    if (this->_xPos > canvasWidth || this->_yPos > canvasHeight)
+    {
+        SendNoIntersectionError(response);
+        return;
+    }
 
     RawImage24 retRawImage = this->_canvas.GetImage(this->_xPos, this->_yPos, this->_width, this->_height);
 

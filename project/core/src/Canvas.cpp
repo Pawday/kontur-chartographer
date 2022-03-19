@@ -139,8 +139,8 @@ Charta::RawImage24 Charta::Canvas::GetChunkAt(uint16_t x, uint16_t y)
 
 void Charta::Canvas::SetChunkAt(uint16_t x, uint16_t y, const RawImage24& chunkImage)
 {
-    if (this->_width < x * CANVAS_CHUNK_SIZE) return;
-    if (this->_height < y * CANVAS_CHUNK_SIZE) return;
+    if (this->_width <= x * CANVAS_CHUNK_SIZE) return;
+    if (this->_height <= y * CANVAS_CHUNK_SIZE) return;
 
     Poco::File chunkFile((std::stringstream() <<
     this->_canvasContextDir.toString() << Poco::Path::separator() << "chunk_" << x << "_" << y << ".bmp").str());
@@ -186,12 +186,14 @@ void Charta::Canvas::AppendImage(uint16_t xPos, uint16_t yPos, Charta::RawImage2
                                     yPos - affectedChunkTopLeftCoordY * CANVAS_CHUNK_SIZE,
                                     image);
 
+    RawImage24 affectedImageSized = affectedImageAligned.GetUncroppedSubImage(0,0, this->_width, this->_height);
+
     for (uint16_t chunkYPos = affectedChunkTopLeftCoordY;
          chunkYPos <= affectedChunkTopLeftCoordY + affectedChunkBottomRightCoordY; chunkYPos++)
         for (uint16_t chunkXPos = affectedChunkTopLeftCoordX;
              chunkXPos <= affectedChunkTopLeftCoordX + affectedChunkBottomRightCoordX; chunkXPos++)
         {
-            RawImage24 chunkImage = affectedImageAligned.GetUncroppedSubImage(
+            RawImage24 chunkImage = affectedImageSized.GetUncroppedSubImage(
                     (chunkXPos - affectedChunkTopLeftCoordX) * CANVAS_CHUNK_SIZE,
                     (chunkYPos - affectedChunkTopLeftCoordY) * CANVAS_CHUNK_SIZE,
                     CANVAS_CHUNK_SIZE, CANVAS_CHUNK_SIZE);

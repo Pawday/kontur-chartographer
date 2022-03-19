@@ -36,14 +36,14 @@ void Charta::ImageAppendHandler::handleRequest(HTTPServerRequest &request, HTTPS
             response.send();
             return;
         }
-        this->_width -= (-this->_xPos);
-        this->_height -= -(this->_yPos);
+        this->_width += this->_xPos;
+        this->_height += this->_yPos;
         rawInputImage = rawInputImage.GetUncroppedSubImage(-this->_xPos, -this->_yPos, this->_width, this->_height);
         this->_xPos = 0;
         this->_yPos = 0;
     }
 
-    if (this->_xPos < 0)
+    if (this->_xPos < 0 && this->_yPos >= 0)
     {
         if (-this->_xPos > this->_width)
         {
@@ -52,11 +52,11 @@ void Charta::ImageAppendHandler::handleRequest(HTTPServerRequest &request, HTTPS
             return;
         }
         this->_width -= (-this->_xPos);
-        rawInputImage = rawInputImage.GetUncroppedSubImage(0, -this->_yPos, this->_width, this->_height);
+        rawInputImage = rawInputImage.GetUncroppedSubImage(-this->_xPos, this->_yPos, this->_width, this->_height);
         this->_xPos = 0;
     }
 
-    if (this->_yPos < 0)
+    if (this->_yPos < 0 && this->_xPos >= 0)
     {
         if (-this->_yPos > this->_height)
         {
@@ -65,7 +65,7 @@ void Charta::ImageAppendHandler::handleRequest(HTTPServerRequest &request, HTTPS
             return;
         }
         this->_height -= -(this->_yPos);
-        rawInputImage = rawInputImage.GetUncroppedSubImage(-this->_xPos, 0, this->_width, this->_height);
+        rawInputImage = rawInputImage.GetUncroppedSubImage(this->_xPos, -this->_yPos, this->_width, this->_height);
         this->_yPos = 0;
     }
 

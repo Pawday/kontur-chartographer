@@ -14,8 +14,8 @@
 #include "handlers/canvas_create_handler.h"
 #include "handlers/append_image_handler.h"
 #include "handlers/get_image_handler.h"
+#include "handlers/canvas_delete_handler.h"
 
-#include "charta/Canvas.hpp"
 #include "charta/Bmp24RGB.hpp"
 
 using namespace Charta;
@@ -65,7 +65,7 @@ Poco::Net::HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPSe
             if(false == Poco::NumberParser::tryParse(heightStrParam, heightParam))
                 return new BadRequestHandler("Not valid height parameter");
             
-            if (path.directory(1).empty())
+            if (path.depth() < 1 || (path.depth() > 0 && path.directory(1).empty()))
             {
                 //creating new canvas
                 if (heightParam > 50000) return new BadRequestHandler("height is too large");
@@ -86,14 +86,13 @@ Poco::Net::HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPSe
                 newCanvas.Init((uint16_t) widthParam,(uint16_t) heightParam);
 
                 return new Charta::CanvasCreatedHandler(newCanvasID);
-            } else
+            }
+            else
             {
                 //appending image
                 const std::string& canvasID = path.directory(1);
 
                 Poco::File canvasContextDir(Poco::Path(this->_workingDirectory.string()).append(canvasID));
-
-                if (false == canvasContextDir.exists()) return new NotFoundHandler();
 
                 Canvas canvas(canvasContextDir.path());
 
@@ -118,8 +117,8 @@ Poco::Net::HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPSe
     }
     if (reqMethod == "GET")
     {
-        std::string canvasID = path.directory(1);
-        if (canvasID.empty()) return new BadRequestHandler("Canvas id not specified");
+        if (path.depth() < 1) return new BadRequestHandler("Canvas id not specified");
+        const std::string& canvasID = path.directory(1);
 
         Poco::File canvasContextDir(Poco::Path(this->_workingDirectory.string()).append(canvasID));
 
@@ -186,7 +185,21 @@ Poco::Net::HTTPRequestHandler* HandlerFactory::createRequestHandler(const HTTPSe
         }
 
     }
-    if (reqMethod == "DELETE") {}
+    if (reqMethod == "DELETE")
+    {
+        const std::string& canvasID = path.directory(1);
+        if (canvasID.empty()) return new BadRequestHandler("Canvas id not specified");
+
+        Poco::File canvasContextDir(Poco::Path(this->_workingDirectory.string()).append(canvasID));
+
+        if (false == canvasContextDir.exists()) return new NotFoundHandler();
+
+        Canvas canvas(canvasContextDir.path());
+
+        if (false == canvas.Exist()) return new NotFoundHandler();
+
+        return new CanvasDeleteHandler(canvas);
+    }
 
 	return new NotFoundHandler();
 }
