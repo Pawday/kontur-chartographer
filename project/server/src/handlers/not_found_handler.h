@@ -1,7 +1,7 @@
 #pragma once
 #include "Poco/Net/HTTPRequestHandler.h"
 
-namespace charta
+namespace Charta
 {
 	class NotFoundHandler : public Poco::Net::HTTPRequestHandler
 	{

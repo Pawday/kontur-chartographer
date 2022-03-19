@@ -73,12 +73,11 @@ Charta::Bmp24RGB::Bmp24RGB(const uint8_t* rawBmpData)
 
     this->width = READ_UINT32(_headerData + 0x12);
     this->height = READ_UINT32(_headerData + 0x16);
+    this->_fullSize = READ_UINT32(_headerData + 0x2);
 
-    uint32_t pixelRawDataSize = this->width * this->height * 4;
+    uint32_t pixelRawDataSize = this->_fullSize - 54;
 
     this->_rawPixelData = new uint8_t[pixelRawDataSize];
-
-    this->_fullSize = pixelRawDataSize + 54;
 
     for (uint32_t i = 0; i < pixelRawDataSize; i++)
         this->_rawPixelData[i] = rawBmpData[54 + i];
