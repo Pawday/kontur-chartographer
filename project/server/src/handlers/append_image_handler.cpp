@@ -69,6 +69,13 @@ void Charta::ImageAppendHandler::handleRequest(HTTPServerRequest &request, HTTPS
         this->_yPos = 0;
     }
 
+    if (rawInputImage.GetWidth() + this->_xPos > this->_canvas.GetWidth())
+        rawInputImage = rawInputImage.GetUncroppedSubImage(0, 0, this->_canvas.GetWidth() - this->_xPos, rawInputImage.GetHeight());
+
+    if (rawInputImage.GetHeight() + this->_yPos > this->_canvas.GetHeight())
+        rawInputImage = rawInputImage.GetUncroppedSubImage(0, 0, rawInputImage.GetWidth(),
+                                                           this->_canvas.GetHeight() - this->_yPos);
+
     this->_canvas.AppendImage(this->_xPos, this->_yPos, rawInputImage);
 
     response.setStatusAndReason(HTTPResponse::HTTP_OK);
